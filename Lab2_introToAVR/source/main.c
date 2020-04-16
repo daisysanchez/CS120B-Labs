@@ -15,12 +15,18 @@
 int main(void) {
     /* Insert DDR and PORT initializations */
 
-	DDRB = 0XFF;
-	PORTB = 0x00;
+	//DDRB = 0XFF;
+	//PORTB = 0x00;
 	
+	DDRA = 0X00; PORTA = 0XFF;
+	DDRB = 0XFF; PORTB = 0X00;
+	
+
+	unsigned char temp_input = 0x00;
     /* Insert your solution below */
     while (1) {
-	PORTB = 0x0F;
+	temp_input = PINA;
+	PORTB = temp_input;
     }
     return 1;
 }
