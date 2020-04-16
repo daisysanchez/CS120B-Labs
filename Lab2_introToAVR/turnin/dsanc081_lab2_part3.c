@@ -52,9 +52,9 @@ int main(void) {
 
 	PORTC = 0x04 - cntavail;
 	
-//	if(cntavail == 0x04){
-//		PORTC = PORTC | 0x80;
-//	}
+	if(cntavail == 0x04){
+		PORTC = PORTC | 0x80;
+	}
 
     }
     return 0;

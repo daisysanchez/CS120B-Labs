@@ -40,22 +40,22 @@ echo Running all tests..."\n\n
 
 # Add tests below
 
-test "PINA: 0X00 => PORTB: 0X00"
+test "PINA: 0X00 => PORTC: 0X04"
 setPINA 0x00
 continue 5
-expectPORTB 0X00
+expectPORTC 0X04
 checkResult
 
-test "PINA: 0x03 => PORTB: 0x00"
+test "PINA: 0x03 => PORTc: 0x02"
 setPINA 0x03
 continue 6
-expectPORTC 0x00
+expectPORTC 0x02
 checkResult
 
-test "PINA: 0x01 => PORTC: 0x01"
-setPINA 0x01
+test "PINA: 0x0F => PORTC: 0x80"
+setPINA 0x0F
 continue 5
-expectPORTC 0x01
+expectPORTC 0x80
 checkResult
 
 # Report on how many tests passed/tests ran
