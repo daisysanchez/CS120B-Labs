@@ -12,28 +12,28 @@
 #include "simAVRHeader.h"
 #endif
 
-enum states{start, max, min} state;
+enum states{start, init, max, min} state;
 
 void Tick(){
 	
 	switch(state){
 		case start:
-			state = main;
+			state = init;
 			break;
-		case main:
+		case init:
 			if(PINA == 0x01){
 				PORTC = PORTC + 0x01;
 				if(PORTC == 0x09){
 					state = max;
 				} else {
-					state = main;
+					state = init;
 				}
 			} else if (PINA == 0x02){
 				PORTC = PORTC - 0x01;
 				if(PORTC == 0x00){
 					state = min;
 				} else {
-					state = main;
+					state = init;
 				}
 			} else if (PINA == 0x03){
 				PORTC = 0x00;
@@ -43,7 +43,7 @@ void Tick(){
 		case max:
 			if(PINA == 0x02){
 				PORTC = PORTC - 0x01;
-				state = main;
+				state = init;
 			} else {
 				state = max;
 			}
@@ -51,13 +51,14 @@ void Tick(){
 		case min:
 			if(PINA == 0x01){
 				PORTC = PORTC + 0x01;
-				state = main;
+				state = init;
 			} else {
 				state = min;
 			}
 			break;
 		default:
-			printf("error in switch1")
+		//	printf("error in switch1");
+			break;
 	}
 
 	
