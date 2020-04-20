@@ -12,74 +12,66 @@
 #include "simAVRHeader.h"
 #endif
 
-enum states{start, offRelease, onPress, onRelease, offPress} state;
+enum states{start, max, min} state;
 
 void Tick(){
+	
 	switch(state){
 		case start:
-			state = offRelease;
+			state = main;
 			break;
-		case offRelease:
+		case main:
 			if(PINA == 0x01){
-				state = onPress;
-			} else {
-				state = offRelease;
+				PORTC = PORTC + 0x01;
+				if(PORTC == 0x09){
+					state = max;
+				} else {
+					state = main;
+				}
+			} else if (PINA == 0x02){
+				PORTC = PORTC - 0x01;
+				if(PORTC == 0x00){
+					state = min;
+				} else {
+					state = main;
+				}
+			} else if (PINA == 0x03){
+				PORTC = 0x00;
+				state = min;
 			}
 			break;
-		case onPress:
-			if(PINA == 0x01 ){
-				state = onPress;
+		case max:
+			if(PINA == 0x02){
+				PORTC = PORTC - 0x01;
+				state = main;
 			} else {
-				state = onRelease;
+				state = max;
 			}
 			break;
-		case onRelease:
+		case min:
 			if(PINA == 0x01){
-				state = offPress;
+				PORTC = PORTC + 0x01;
+				state = main;
 			} else {
-				state = onRelease;
-			} 
-			break;
-		case offPress:
-			if(PINA == 0x01){
-				state = offPress;
-			} else {
-				state = offRelease;
-			} 
+				state = min;
+			}
 			break;
 		default:
-			printf("error in switch1");
-			break;
+			printf("error in switch1")
 	}
 
-	switch(state){
-		case start:
-			break;
-		case offRelease:	
-			PORTB = 0x01;
-			break;
-		case onPress:	
-			PORTB = 0x02;
-			break;
-		case onRelease:	
-			PORTB = 0x02;
-			break;
-		case offPress:	
-			PORTB = 0x01;
-			break;
-		default:
-			printf("error in switch2");
-			break;	
-	}	
+	
 }
 
 int main(void) {
     /* Insert DDR and PORT initializations */
 
 	DDRA = 0x00; PORTA = 0xFF; //initialized as inputs
-	DDRB = 0xFF; PORTB = 0x00;
+	DDRC = 0xFF; PORTC = 0x00; //initialized as outputs
 
 	state = start;
+
+	PORTC = 0x07;
 
 	while(1){
 
