@@ -20,28 +20,28 @@ void Tick(){
 			state = offRelease;
 			break;
 		case offRelease:
-			if(PA0){
+			if(PINA == 0x01){
 				state = onPress;
 			} else {
 				state = offRelease;
 			}
 			break;
 		case onPress:
-			if(PA0){
+			if(PINA == 0x01 ){
 				state = onPress;
 			} else {
 				state = onRelease;
 			}
 			break;
 		case onRelease:
-			if(PA0){
+			if(PA0 == 0x01){
 				state = offPress;
 			} else {
 				state = onPress;
 			} 
 			break;
 		case offPress:
-			if(PA0){
+			if(PA0 == 0x01){
 				state = offPress;
 			} else {
 				state = offRelease;
