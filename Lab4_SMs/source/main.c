@@ -34,14 +34,14 @@ void Tick(){
 			}
 			break;
 		case onRelease:
-			if(PA0 == 0x01){
+			if(PINA == 0x01){
 				state = offPress;
 			} else {
 				state = onRelease;
 			} 
 			break;
 		case offPress:
-			if(PA0 == 0x01){
+			if(PINA == 0x01){
 				state = offPress;
 			} else {
 				state = offRelease;
