@@ -24,7 +24,7 @@ void Tick(){
 				state = onPress;
 			} else {
 				state = offRelease;
-	`		}
+			}
 			break;
 		case onPress:
 			if(PA0){
@@ -55,21 +55,17 @@ void Tick(){
 	switch(state){
 		case start:
 			break;
-		case offRelease:
-			PB0 = 1;
-			PB1 = 0;
+		case offRelease:	
+			PORTB = 0x01;
 			break;
-		case onPress:
-			PB0 = 0;
-			PB1 = 1;
+		case onPress:	
+			PORTB = 0x02;
 			break;
-		case onRelease:
-			PB0 = 0;
-			PB1 = 1;
+		case onRelease:	
+			PORTB = 0x02;
 			break;
-		case offPress;
-			PB0 = 1;
-			PB1 = 0;
+		case offPress:	
+			PORTB = 0x01;
 			break;
 		default:
 			printf("error in switch2");
@@ -81,16 +77,13 @@ int main(void) {
     /* Insert DDR and PORT initializations */
 
 	DDRA = 0x00; PORTA = 0xFF; //initialized as inputs
-	DDRB = 0xFF; PORTB = 0x00; //initialized as outputs
+	DDRB = 0xFF; PORTB = 0x00;
 
 	state = start;
 
+	while(1){
 
-    /* Insert your solution below */
-    while (1) {	
-	
-	Tick();
+		Tick();
+	}
 
-    }
-    return 1;
-}
+}	
