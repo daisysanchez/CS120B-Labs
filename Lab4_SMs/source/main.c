@@ -37,7 +37,7 @@ void Tick(){
 			if(PA0 == 0x01){
 				state = offPress;
 			} else {
-				state = onPress;
+				state = onRelease;
 			} 
 			break;
 		case offPress:
