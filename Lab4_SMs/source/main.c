@@ -12,65 +12,56 @@
 #include "simAVRHeader.h"
 #endif
 
-enum states{start, read, inc, dec, reset} state;
+enum states{start, hashPress, hashRelease, yPress, init} state;
 
 void Tick(){
 	
 	switch(state){
 		case start:
-			state = read;
+			state = init;
 			break;
-		case read:
-			if(PINA == 0x01){
-				if(PORTC != 0X09){
-					PORTC = PORTC + 0X01;
-				} 
-				state = inc;
-			} else if (PINA == 0X02){
-				if(PORTC != 0X00){
-					PORTC = PORTC - 0X01;
-				} 
-				state = dec;
-			} else if (PINA == 0X03){
-				state = reset;
+		case init:
+			if(PINA == 0X01){
+				state = hashPress;
 			} else {
-				state = read;
+				state = init;
 			}
 			break;
-		
-		case inc:
-			if(PINA == 0X00){
-				state = read;
-			} else if (PINA == 0X03) {
-				state = reset;
+		case hashPress: 
+			if(PINA & 0x80) state = init;
+			if(PINA == 0x00){
+				state = hashRelease;
+			} else if (PINA == 0X01){
+				state = hashPress;
 			} else {
-				state = inc;
+				state = init;
 			}
 			break;
-		case dec:
-			if(PINA == 0X00){
-				state = read;
-			} else if (PINA == 0X03){
-				state = reset;
+		case hashRelease:
+			if(PINA & 0X80) state = init;
+			if(PINA == 0x02){
+				state = yPress;
+			} else if (PINA == 0x00){
+				state = hashRelease;
 			} else {
-				state = dec;
-			}
+				state = init;
+			} 
 			break;
-		case reset:
-			if(PINA == 0X00){
-				state = read;
-			} else {
-				state = reset;
-			}
+		case yPress :
+			state = init;
 			break;
+
 		default:
 		//	printf("error in switch1");
 			break;
 	}
 
 	switch(state){
-		case reset:
-			PORTC = 0X00;
+		case init:
+			PORTB = 0X00;
+			break;
+		case yPress:
+			PORTB = 0X01;
 			break;
 		default:
 			break;
@@ -83,15 +74,12 @@ int main(void) {
     /* Insert DDR and PORT initializations */
 
 	DDRA = 0x00; PORTA = 0xFF; //initialized as inputs
-	DDRC = 0xFF; PORTC = 0x00; //initialized as outputs
+	DDRB = 0xFF; PORTB = 0x00; //initialized as outputs
 
 	state = start;
 
-	PORTC = 0x07;
-
 	while(1){
-
 		Tick();
-	}
+	}	
 
-}	
+}
