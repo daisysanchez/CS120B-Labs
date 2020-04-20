@@ -12,52 +12,67 @@
 #include "simAVRHeader.h"
 #endif
 
-enum states{start, init, max, min} state;
+enum states{start, read, inc, dec, reset} state;
 
 void Tick(){
 	
 	switch(state){
 		case start:
-			state = init;
+			state = read;
 			break;
-		case init:
+		case read:
 			if(PINA == 0x01){
-				PORTC = PORTC + 0x01;
-				if(PORTC == 0x09){
-					state = max;
-				} else {
-					state = init;
-				}
-			} else if (PINA == 0x02){
-				PORTC = PORTC - 0x01;
-				if(PORTC == 0x00){
-					state = min;
-				} else {
-					state = init;
-				}
-			} else if (PINA == 0x03){
-				PORTC = 0x00;
-				state = min;
+				if(PORTC != 0X09){
+					PORTC = PORTC + 0X01;
+				} 
+				state = inc;
+			} else if (PINA == 0X02){
+				if(PORTC != 0X00){
+					PORTC = PORTC - 0X01;
+				} 
+				state = dec;
+			} else if (PINA == 0X03){
+				state = reset;
+			} else {
+				state = read;
 			}
 			break;
-		case max:
-			if(PINA == 0x02){
-				PORTC = PORTC - 0x01;
-				state = init;
+		
+		case inc:
+			if(PINA == 0X00){
+				state = read;
+			} else if (PINA == 0X03) {
+				state = reset;
 			} else {
-				state = max;
+				state = inc;
 			}
 			break;
-		case min:
-			if(PINA == 0x01){
-				PORTC = PORTC + 0x01;
-				state = init;
+		case dec:
+			if(PINA == 0X00){
+				state = read;
+			} else if (PINA == 0X03){
+				state = reset;
 			} else {
-				state = min;
+				state = dec;
+			}
+			break;
+		case reset:
+			if(PINA == 0X00){
+				state = read;
+			} else {
+				state = reset;
 			}
 			break;
 		default:
 		//	printf("error in switch1");
+			break;
+	}
+
+	switch(state){
+		case reset:
+			PORTC = 0X00;
+			break;
+		default:
 			break;
 	}
 
