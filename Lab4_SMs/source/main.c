@@ -21,7 +21,7 @@ void Tick(){
 			state = init;
 			break;
 		case init:
-			if(PINA == 0X01){
+			if ((PINA & 0X01) && !(PINA & 0X02)){
 				state = hashPress;
 			} else {
 				state = init;
@@ -29,9 +29,9 @@ void Tick(){
 			break;
 		case hashPress: 
 			if(PINA & 0x80) state = init;
-			if(PINA == 0x00){
+			if(PINA & 0x00){
 				state = hashRelease;
-			} else if (PINA == 0X01){
+			} else if (PINA & 0X01){
 				state = hashPress;
 			} else {
 				state = init;
@@ -39,7 +39,7 @@ void Tick(){
 			break;
 		case hashRelease:
 			if(PINA & 0X80) state = init;
-			if(PINA == 0x02){
+			if( !(PINA & 0X01) && (PINA & 0X02)){
 				state = yPress;
 			} else if (PINA == 0x00){
 				state = hashRelease;
