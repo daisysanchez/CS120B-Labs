@@ -53,7 +53,7 @@ void Tick(){
 			PORTB = 0x00;
 			break;
 		case release:
-
+		
 			break;
 		case press:
 			cnt++;	
@@ -67,14 +67,16 @@ void Tick(){
 			}*/
 			break;
 		case hold:
-		//	if(cnt == 1){
+			if(cnt == 1){
 				PORTB = 0x08;
-		/*	} else if (cnt == 2){
-				PORTB = 0x21;
-			} else{ //if(cnt == 3){
-				PORTB = 0X65;
+			
+			} else if (cnt == 2){
+				PORTB = 0x12;
+			} else if(cnt == 3){ //if(cnt == 3){
+				PORTB = 0x25;
+			} else {
 				cnt = 1;
-			}*/	
+			}
 			break;
 		default:
 			break;
@@ -90,9 +92,10 @@ int main(void) {
 	PORTB = 0x00;
 
 	state = start;
+	cnt = 0;
 
 	while(1){
-	button0 = ~PINA & 0X01;	
+		button0 = ~PINA & 0X01;	
 		Tick();
 	//PORTB = 0XFF;
 	}
