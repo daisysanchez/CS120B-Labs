@@ -18,38 +18,41 @@ int main(void) {
 //	DDRB = 0xFF; PORTB = 0X00; //configures port b as outputs
 	DDRC = 0xFF; PORTC = 0x00;
 	
-
-	unsigned char sensor = 0x00;
 	unsigned char indicator = 0x00;
+
+	unsigned char button0 = 0x00;
+	unsigned char button1 = 0x00;
+	unsigned char button2 = 0x00;
+	unsigned char button3 = 0x00;
 
     /* Insert your solution below */
     while (1) {	
 
-	sensor = PINA;
+	button0 = ~PINA & 0x01; //sets to pa0
+	button1 = ~PINA & 0x02; //sets to pa1
+	button2 = ~PINA & 0x04; //sets to pa2
+	button3 = ~PINA & 0x08; //sets to pa3
 
-	if((~sensor & 0x01) == 0x01 || (~sensor & 0x00) == 0x00){
+	if((button0 && !button1 && !button2 && !button3) || (!button0 && button1 &&  !button2 && !button3)){ //1, 2
+		//light c5, 6
 		indicator = 0x60;
-	} 
-       	if ((~sensor & 0x03) == 0x03 || (~sensor & 0x04) == 0x04){
+	} else if((button0 && button1 && !button2 && !button3) || (!button0 && !button1 && button2 && !button3)){ //3,4
+		//lights c5,4 and 6
 		indicator = 0x70;
-	} 
-       	if ( (~sensor & 0x05) == 0x05 || (~sensor & 0x06) == 0x06){
+	} else if((button0 && !button1 && button2 && !button3) || (!button0 && button1 && button2 && !button3)){ //5,6
+		//lights c5, 4, 3
 		indicator = 0x38;
+	} else if((button0 && button1 && button2 && !button3) || (!button0 && !button1 &&  !button2 && button3) || (button0 && !button1 && !button2 && button3)){ //7,8,9
+		indicator = 0x3C; 
+	} else if((!button0 && button1 && !button2 && button3) || (button0 && button1 && !button2 && button3) || (!button0 && !button1 && button2 && button3)){ //10,11,12
+		indicator = 0x3E;
+	} else if((button0 && !button1 && button2 && button3) || (!button0 && button1 && button2 && button3) || (button0 && button1 && button2 && button3)){ //13,14,15
+		indicator = 0x3F;
+	} else { //0
+		indicator = 0x0;
 	}
-       	if ((~sensor & 0x07) == 0x07 || (~sensor & 0x08) == 0x08 || (~sensor & 0x09) == 0x09){
-		indicator  = 0x03C;
-	}
-       	if ((~sensor & 0x0A) == 0x0A || (~sensor & 0x0B) == 0x0B || (~sensor & 0X0c) == 0x0c){
-		indicator = 0x3e;
-	} 
-       if((~sensor & 0x0D) == 0x0D || (~sensor & 0x0E) == 0x0E || (~sensor & 0x0F) == 0x0F){
-		indicator = 0x3f;
-	}	
-	
+
 	PORTC = indicator;
-
-	
-
     }
     return 1;
 }
