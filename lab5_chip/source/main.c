@@ -12,96 +12,89 @@
 #include "simAVRHeader.h"
 #endif
 
-enum states{start, release,  press, hold, reset} state;
+enum states{start, release, press, hold} state;
 
 unsigned char button0 = 0x00;
-unsigned char button1 = 0x00;
 
-unsigned char cnt = 0;
+unsigned char cnt;
 
 void Tick(){
-
 	switch(state){
 		case start:
 			state = release;
 			break;
 		case release:
-			if(button0 ^ button1){
-			       	state = press;
-			} else if (button0 && button1){
-				state = reset;
+			if(button0){
+				state = press;
 			} else {
 				state = release;
-			}	
+			}
 			break;
 		case press:
-			if(button0 ^ button1){
+			if(button0){
 				state = hold;
-			} else if (button0 && button1) {
-				state = reset;
 			} else {
 				state = release;
 			}
 			break;
 		case hold:
-			if(button0 ^ button1){
+			if(button0){
 				state = hold;
-			} else if (button0 && button1){
-				state = reset;
 			} else {
 				state = release;
-			}
-			break;
-		case reset:
-			if(!button0 && !button1){
-				state = release;
-			} else {
-				state = reset;
 			}
 			break;
 		default:
 			break;
 	}
 
-	switch (state) {
-		case press:
-			if(button0 && cnt<9){
-				cnt ++;
-				PORTC = cnt;
-			} else if (button1 && cnt>0){
-				cnt--;
-				PORTC = cnt;
-			} else {
-			}
-
-			break;
-		case hold:
-			break;
-		case reset:
-			cnt = 0;
-			PORTC = 0;
+	switch(state){
+		case start:
+			PORTB = 0x00;
 			break;
 		case release:
+
+			break;
+		case press:
+			cnt++;	
+			/*if(cnt == 0){
+				PORTB = 0x08;
+			} else if (cnt == 1){
+				PORTB = 0x21;
+			} else{// if (cnt %3 A== 2){
+				//6, 1, 3
+				PORTB = 0x65;
+			}*/
+			break;
+		case hold:
+		//	if(cnt == 1){
+				PORTB = 0x08;
+		/*	} else if (cnt == 2){
+				PORTB = 0x21;
+			} else{ //if(cnt == 3){
+				PORTB = 0X65;
+				cnt = 1;
+			}*/	
 			break;
 		default:
 			break;
 	}
-	
 }
 
 int main(void) {
     /* Insert DDR and PORT initializations */
 
 	DDRA = 0x00; PORTA = 0xFF; //initialized as inputs
-	DDRC = 0xFF; PORTC = 0x00; //initialized as outputs
+	DDRB = 0xFF; PORTB = 0x00; //initialized as outputs
+
+	PORTB = 0x00;
 
 	state = start;
-	PORTC = 0x00;
 
 	while(1){
-		button0 = ~PINA & 0x01; //pa0
-		button1 = ~PINA & 0x02; //pa1
+	button0 = ~PINA & 0X01;	
 		Tick();
+	//PORTB = 0XFF;
 	}
 
 }	
