@@ -12,70 +12,80 @@
 #include "simAVRHeader.h"
 #endif
 
-enum states{start, read, inc, dec, reset} state;
+enum states{start, release,  press, hold, reset} state;
+
+unsigned char button0 = 0x00;
+unsigned char button1 = 0x00;
+
+unsigned char cnt = 0;
 
 void Tick(){
-	
+
 	switch(state){
 		case start:
-			state = read;
+			state = release;
 			break;
-		case read:
-			if(~PINA == 0x01){
-				if(PORTC != 0X09){
-					PORTC = PORTC + 0X01;
-				} 
-				state = inc;
-			} else if (~PINA == 0X02){
-				if(PORTC != 0X00){
-					PORTC = PORTC - 0X01;
-				} 
-				state = dec;
-			} else if (~PINA == 0X03){
+		case release:
+			if(button0 ^ button1){
+			       	state = press;
+			} else if (button0 && button1){
 				state = reset;
 			} else {
-				state = read;
+				state = release;
+			}	
+			break;
+		case press:
+			if(button0 ^ button1){
+				state = hold;
+			} else if (button0 && button1) {
+				state = reset;
+			} else {
+				state = release;
 			}
 			break;
-		
-		case inc:
-			if(~PINA == 0X00){
-				state = read;
-			} else if (~PINA == 0X03) {
+		case hold:
+			if(button0 ^ button1){
+				state = hold;
+			} else if (button0 && button1){
 				state = reset;
 			} else {
-				state = inc;
-			}
-			break;
-		case dec:
-			if(~PINA == 0X00){
-				state = read;
-			} else if (~PINA == 0X03){
-				state = reset;
-			} else {
-				state = dec;
+				state = release;
 			}
 			break;
 		case reset:
-			if(~PINA == 0X00){
-				state = read;
+			if(!button0 && !button1){
+				state = release;
 			} else {
 				state = reset;
 			}
 			break;
 		default:
-		//	printf("error in switch1");
 			break;
 	}
 
-	switch(state){
+	switch (state) {
+		case press:
+			if(button0 && cnt<9){
+				cnt ++;
+				PORTC = cnt;
+			} else if (button1 && cnt>0){
+				cnt--;
+				PORTC = cnt;
+			} else {
+			}
+
+			break;
+		case hold:
+			break;
 		case reset:
-			PORTC = 0X00;
+			cnt = 0;
+			PORTC = 0;
+			break;
+		case release:
 			break;
 		default:
 			break;
 	}
-
 	
 }
 
@@ -86,11 +96,11 @@ int main(void) {
 	DDRC = 0xFF; PORTC = 0x00; //initialized as outputs
 
 	state = start;
-
 	PORTC = 0x00;
 
 	while(1){
-
+		button0 = ~PINA & 0x01; //pa0
+		button1 = ~PINA & 0x02; //pa1
 		Tick();
 	}
 
