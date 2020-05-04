@@ -24,7 +24,7 @@ int main(void) {
 	unsigned char button1 = 0x00;
 	unsigned char button2 = 0x00;
 	unsigned char button3 = 0x00;
-
+//
     /* Insert your solution below */
     while (1) {	
 
