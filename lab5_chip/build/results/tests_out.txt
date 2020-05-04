@@ -1,0 +1,10 @@
+Breakpoint 1 at 0xe6: file source/main.c, line 20.
+Note: automatically using hardware breakpoints for read-only addresses.
+Quit
+Quit
+Quit
+Quit
+Quit
+Quit
+Detaching from program: /home/lab/UCRCS120B_AVRTools/lab_chip/build/objects/main.elf, Remote target
+Remote connection closed
