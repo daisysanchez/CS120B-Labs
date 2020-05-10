@@ -12,7 +12,7 @@ void TimerOn(){
 
 	TIMSK1 = 0x02;
 
-	TCNT = 0;
+	TCNT1 = 0;
 
 	_avr_timer_cntcurr = _avr_timer_M;
 
