@@ -55,33 +55,57 @@ void TimerSet(unsigned long M){
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
+enum States{start, B0, B1, B2} state;
 
+void Tick(){
 
+	switch(state){
+		case start:
+			state = B0;
+		case B0:
+			state = B1;	
+			break;
+		case B1:
+			state = B2;	
+			break;
+
+		case B2:
+			state = B0;	
+			break;
+
+		default:
+			break;
+	}
+
+	switch(state){
+		case start:
+			break;
+		case B0:
+			PORTB = 0x01;
+			break;
+		case B1:
+			PORTB = 0x02;
+			break;
+		case B2:
+			PORTB = 0x04;
+		break;
+	}
+	
+}
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-
+	DDRA = 0X00; PORTA = 0xFF;
 	DDRB = 0xFF; PORTB = 0x00; //sets portb to output
 	TimerSet(1000);
 	TimerOn();
 
-//	unsigned char tmpB = 0x00;
-//
-//	unsigned char light0 = 0x00;
-//	unsigned char light1 = 0x00;
-//	unsigned char light2 = 0x00;
+	 state = start;
 
     /* Insert your solution below */
     while (1){
-	PORTB = 0x01;
-	while(!TimerFlag);
-	TimerFlag = 0;
 
-	PORTB = 0x02;
-	while(!TimerFlag);
-	TimerFlag = 0;
-
-	PORTB = 0x04;
+	Tick();
 	while(!TimerFlag);
 	TimerFlag = 0;
 
