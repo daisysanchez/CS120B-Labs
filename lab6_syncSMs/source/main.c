@@ -55,24 +55,68 @@ void TimerSet(unsigned long M){
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
-enum States{start, B0, B1, B2} state;
-unsigned char tmpB = 0x00;
+enum States{start, B0, B1, B2, press, release} state, prev_state, next_state;
+
+unsigned char button0;
 
 void Tick(){
 
 	switch(state){
 		case start:
 			state = B0;
+			break;
 		case B0:
-			state = B1;	
+			if(button0){
+				state = press;
+			} else {
+				state = B1;	
+				
+			}
+			next_state = B1;
+			prev_state = B0;	
 			break;
 		case B1:
-			state = B2;	
+			if(button0){
+				state = press;
+				if(prev_state == B0){
+					next_state = B2;
+				} else {
+					next_state = B0;
+				}
+			} else {
+				if(prev_state == B0){
+					state = B2;
+				} 
+				else {
+					state = B0;
+				}
+			}
+			prev_state = B1;
 			break;
 
 		case B2:
-			state = B0;	
+			if(button0){
+				state = press;
+				next_state = B1;
+			} else {
+				state = B1;		
+			}
+			prev_state = B2;
 			break;
+		case press:
+			if(button0){
+				state = press;
+			} else {
+				state = release;
+			}
+			break;
+		case release:	
+		//	if(prev_state == B0) state = B0;
+		//	if(prev_state == B1) state = B1;
+		//	if(prev_state == B2) state = B2;
+			state = next_state;
+			break;
+			
 
 		default:
 			break;
@@ -81,18 +125,19 @@ void Tick(){
 	switch(state){
 		case start:
 			break;
-		case B0:
-			tmpB = 0x01;
-			PORTB = tmpB;
+		case B0:	
+			PORTB = 0x01;
 			break;
 		case B1:
-			tmpB = 0x02;
-			PORTB = tmpB;
+	
+			PORTB = 0x02;
 			break;
-		case B2:
-			tmpB = 0x04;
-			PORTB = tmpB;
-		break;
+		case B2:	
+
+			PORTB = 0x04;
+			break;
+		default:
+			break;
 	}
 	
 }
@@ -101,16 +146,17 @@ int main(void) {
     /* Insert DDR and PORT initializations */
 	DDRA = 0X00; PORTA = 0xFF;
 	DDRB = 0xFF; PORTB = 0x00; //sets portb to output
-	TimerSet(1000);
+	TimerSet(300);
 	TimerOn();
 
 	//unsigned char tmpB = 0x00;
 
 	 state = start;
+	 prev_state = start;	
 
     /* Insert your solution below */
     while (1){
-
+	    button0 = ~PINA & 0x01;
 	Tick();
 	while(!TimerFlag);
 	TimerFlag = 0;
