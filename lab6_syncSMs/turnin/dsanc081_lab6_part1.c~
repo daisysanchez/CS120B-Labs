@@ -56,7 +56,6 @@ void TimerSet(unsigned long M){
 }
 
 enum States{start, B0, B1, B2} state;
-unsigned char tmpB = 0x00;
 
 void Tick(){
 
@@ -82,16 +81,13 @@ void Tick(){
 		case start:
 			break;
 		case B0:
-			tmpB = 0x01;
-			PORTB = tmpB;
+			PORTB = 0x01;
 			break;
 		case B1:
-			tmpB = 0x02;
-			PORTB = tmpB;
+			PORTB = 0x02;
 			break;
 		case B2:
-			tmpB = 0x04;
-			PORTB = tmpB;
+			PORTB = 0x04;
 		break;
 	}
 	
@@ -103,8 +99,6 @@ int main(void) {
 	DDRB = 0xFF; PORTB = 0x00; //sets portb to output
 	TimerSet(1000);
 	TimerOn();
-
-	//unsigned char tmpB = 0x00;
 
 	 state = start;
 
