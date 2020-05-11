@@ -97,7 +97,7 @@ void Tick(){
 			break;
 */
 		case reset:
-			if(!(button0 && button1)){
+			if(!button0 && !button1){
 				state = release;
 			} else {
 				state = reset;
