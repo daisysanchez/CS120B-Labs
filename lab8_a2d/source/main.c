@@ -32,15 +32,21 @@ int main(void) {
 	unsigned char ledsB = (char)x;
 	unsigned char ledsD = (char)x;
 
-
+	
 	
     while (1) {
-		x = ADC;
-	    ledsB = (char)x;
-	    ledsD = (char)(x>>8);
 
-	    PORTB = ledsB;
-	    PORTD = ledsD;
+	    if(ADC >= (896/2)) {
+		    PORTB = 0xFF;
+	    } else {
+		    PORTB = 0x00;
+	    }
+	//	x = ADC;
+	  //  ledsB = (char)x;
+	  //  ledsD = (char)(x>>8);
+
+	   // PORTB = ledsB;
+	   // PORTD = ledsD;
 	
     }
     return 1;
