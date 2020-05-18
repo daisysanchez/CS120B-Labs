@@ -6,6 +6,7 @@
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
+* video demo: https://www.youtube.com/watch?v=HlhHHft4zoo
  */
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -177,6 +178,8 @@ void Play(){
 	set_PWM(mii[0]);
         while(!TimerFlag);
         TimerFlag = 0;
+	while(!TimerFlag);
+	TimerFlag = 0;
 
     set_PWM(mii[1]);
         while(!TimerFlag);
