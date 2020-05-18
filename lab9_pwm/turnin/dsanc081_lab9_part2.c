@@ -153,10 +153,7 @@ int main(void) {
 	    button1 = ~PINA & 0x02;
 	    button2 = ~PINA & 0x04;
 
-	    set_PWM(261.63);
-	    set_PWM(440.0);
-
-	   // Tick();
+	    Tick();
 
 
     }
