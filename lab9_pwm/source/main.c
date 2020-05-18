@@ -90,7 +90,7 @@ void PWM_off(){
 	TCCR3A = 0x00;
 	TCCR3B = 0x00;
 }
-enum States{start, off, play} state;
+enum States{start, off, play, hold} state;
 
 double frequencies[9] = {261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25};
 double mii[7] = {369.99, 440.0, 554.37, 293.66, 659.25, 622.25, 587.33};
@@ -99,6 +99,137 @@ unsigned char frequency = 0;
 unsigned char done;
 
 unsigned char button0;
+
+void Play(){
+	set_PWM(mii[0]);
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+
+    set_PWM(mii[1]);
+	    while(!TimerFlag);
+		TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+
+	set_PWM(mii[2]);
+		while(!TimerFlag);
+		TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+
+	set_PWM(mii[1]);
+		while(!TimerFlag);
+		TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+
+	set_PWM(mii[0]);
+		while(!TimerFlag);
+		TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+    set_PWM(mii[3]);
+		while(!TimerFlag);
+		TimerFlag = 0;
+
+	set_PWM(0);
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+	set_PWM(mii[3]);
+		while(!TimerFlag);
+		TimerFlag = 0;
+
+	set_PWM(0);
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+		
+	set_PWM(mii[3]);
+		while(!TimerFlag);
+		TimerFlag = 0;
+
+	set_PWM(0);
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+	set_PWM(mii[0]);
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+    set_PWM(mii[1]);
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+	set_PWM(mii[2]);
+            while(!TimerFlag);
+            TimerFlag = 0;
+            while(!TimerFlag);
+            TimerFlag = 0;
+            while(!TimerFlag);
+            TimerFlag = 0;
+
+	set_PWM(mii[1]);
+            while(!TimerFlag);
+            TimerFlag = 0;
+	        while(!TimerFlag);
+            TimerFlag = 0;
+            while(!TimerFlag);
+            TimerFlag = 0;
+
+    set_PWM(mii[0]);
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+	set_PWM(mii[4]);
+        while(!TimerFlag);
+        TimerFlag = 0;
+		while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+	set_PWM(mii[5]);
+        while(!TimerFlag);
+        TimerFlag = 0;
+
+	set_PWM(mii[6]);
+        while(!TimerFlag);
+        TimerFlag = 0;
+        while(!TimerFlag);
+        TimerFlag = 0;
+		while(!TimerFlag);
+        TimerFlag = 0;
+	    while(!TimerFlag);
+        TimerFlag = 0;
+
+	set_PWM(0);
+}
 
 void Tick(){
 
@@ -112,8 +243,16 @@ void Tick(){
 			}
 			break;
 		case play:
-			state = off;
+			if(button0){
+				state = hold;
+			}
 			break;
+		case hold:
+			if(button0){
+				state = hold;
+			} else {
+				state = off;
+			}
 		default:
 			break;
 	}
@@ -126,17 +265,10 @@ void Tick(){
 			done = 0;
 			break;
 		case play:
-			set_PWM(mii[0]);
-			while(!TimerFlag);
-			TimerFlag = 0;
-                        set_PWM(mii[1]);
-                        set_PWM(mii[2]);
-                        set_PWM(mii[1]);
-                        set_PWM(mii[0]);
-                        set_PWM(mii[3]);
-                        set_PWM(mii[3]);
-                        set_PWM(mii[3]);
-			done = 1;
+			Play();
+
+			break;
+		case hold:
 			break;
 		default:
 			break;
@@ -161,142 +293,6 @@ int main(void) {
 //	    button1 = ~PINA & 0x02;
 //	    button2 = ~PINA & 0x04;
 
-	    	set_PWM(mii[0]);
-            	while(!TimerFlag);
-            	TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-
-           	 set_PWM(mii[1]);
-	    	while(!TimerFlag);
-		TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-
-		set_PWM(mii[2]);
-		while(!TimerFlag);
-		TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-
-		set_PWM(mii[1]);
-		while(!TimerFlag);
-		TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-
-		set_PWM(mii[0]);
-		while(!TimerFlag);
-		TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-//                while(!TimerFlag);
-  //              TimerFlag = 0;
-
-
-            	set_PWM(mii[3]);
-		while(!TimerFlag);
-		TimerFlag = 0;
-
-		set_PWM(0);
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-		set_PWM(mii[3]);
-		while(!TimerFlag);
-		TimerFlag = 0;
-
-		set_PWM(0);
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-		
-		set_PWM(mii[3]);
-		while(!TimerFlag);
-		TimerFlag = 0;
-
-		set_PWM(0);
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-		set_PWM(mii[0]);
-                while(!TimerFlag);
-                TimerFlag = 0;
-//                while(!TimerFlag);
-//                TimerFlag = 0;
-
-                 set_PWM(mii[1]);
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-                set_PWM(mii[2]);
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-//                while(!TimerFlag);
-//                TimerFlag = 0;
-//                while(!TimerFlag);
-//                TimerFlag = 0;
-
-		set_PWM(mii[1]);
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-                set_PWM(mii[0]);
-                while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-		set_PWM(mii[4]);
-                while(!TimerFlag);
-                TimerFlag = 0;
-		while(!TimerFlag);
-                TimerFlag = 0;
-//		break;
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-		set_PWM(mii[5]);
-                while(!TimerFlag);
-                TimerFlag = 0;
-
-		set_PWM(mii[6]);
-              while(!TimerFlag);
-                TimerFlag = 0;
-                while(!TimerFlag);
-                TimerFlag = 0;                while(!TimerFlag);
-                TimerFlag = 0;                while(!TimerFlag);
-                TimerFlag = 0;
-
-		set_PWM(0);
 		break;
 
 //	   Tick();
