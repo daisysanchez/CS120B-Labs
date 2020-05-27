@@ -6,7 +6,7 @@
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
-* video demo: https://www.youtube.com/watch?v=HlhHHft4zoo
+* video demo: https://www.youtube.com/watch?v=Q_498a7U6bE
  */
 #include <avr/io.h>
 #include <avr/interrupt.h>
