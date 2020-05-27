@@ -14,21 +14,9 @@
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-	DDRA = 0x00; PORTA = 0xFF;
-	DDRB = 0xFF; PORTB = 0x00;
-
-	unsigned char button0;
 
     /* Insert your solution below */
     while (1) {
-
-	    button0 = ~PINA & 0x01;
-
-	    if(button0){
-		    PORTB = 0xFF;
-	    } else {
-		    PORTB = 0x00;
-	    }
 
     }
     return 1;

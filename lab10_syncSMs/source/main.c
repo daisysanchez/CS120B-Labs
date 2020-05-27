@@ -23,8 +23,6 @@ unsigned char blinkingLED;
 unsigned short timerOne = 0;
 unsigned short timerTwo = 0;
 
-unsigned char button0;
-
 
 //cycles through pb0...pb2
 void threeLEDsSM(){
@@ -124,18 +122,16 @@ void blinkingLEDsSM(){
 }
 
 void combinedLEDsSM(){
-	if(button0){
-		PORTB = (0x10 + (blinkingLED << 3) + threeLEDs);
-	} else {
-		PORTB = 0x00;
-		PORTB = (blinkingLED << 3) + (threeLEDs);
-	}
+
+	PORTB = ((blinkingLED << 3) + threeLEDs);
 }
 
 int main(void) {
     /* Insert DDR and PORT initializations */
 	DDRA = 0x00; PORTA = 0xFF;
 	DDRB = 0xFF; PORTB = 0x00;
+
+	unsigned char button0;
 
 	TimerOn();
 	TimerSet(1);
@@ -148,14 +144,6 @@ int main(void) {
 
 	while(!TimerFlag);
 	TimerFlag = 0;
-	
-//	    button0 = ~PINA & 0x01;
-	
-//	if(button0){
-//		PORTB = 0xFF;
-//	} else {
-//		PORTB = 0x00;
-//	}
     }
     return 1;
 }
