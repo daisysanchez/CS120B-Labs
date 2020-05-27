@@ -12,17 +12,34 @@
 #include "timer.h"
 
 /* SM state declarations --- fill in as needed */
-typedef enum ping_states { PInit,                                           } ping_states;
-typedef enum detect_eq_states { DEQInit,                                    } detect_eq_states;
-typedef enum detect_max_amp_states { DMAInit,                               } detect_max_amp_states;
+typedef enum ping_states { PInit, POn, POff                                         } ping_states;
+typedef enum detect_eq_states { DEQInit, DEQHigh, DEQLow, DEQEase                                    } detect_eq_states;
+typedef enum detect_max_amp_states { DMAInit, DMARead, DMAIdle                              } detect_max_amp_states;
 typedef enum detect_zc_states { DZCInit,                                    } detect_zc_states;
 typedef enum transmit_states {TInit,                                        } transmit_states;
 
 /* shared variables --- fill in as needed */
 
+////////////input
+
+unsigned char A0;
+unsigned char A1;
+unsigned char A2;
+unsigned char A3;
+unsigned char A4;
+unsigned char A5;
+unsigned char A6;
+unsigned char A7;
 
 
+unsigned char ping = 0; //helps to set B0
 
+//detect_eq
+unsigned char earthquakeEndCnt = 0;
+unsigned char earthquakeDetected = 0;
+
+//max amp
+unsigned char maxAmp = 0;
 
 /* state variables --- do not alter */
 ping_states ping_state;
@@ -60,6 +77,20 @@ int main(void) {
     transmit_state = TInit;
 
     while (1) {
+	//motion direction
+	A0 = ~PINA & 0x01;	
+	A1 = ~PINA & 0x02;
+	A2 = ~PINA & 0x04;
+
+	//motion amplitude
+	A3 = ~PINA & 0x08;
+	A4 = ~PINA & 0x10;
+	A5 = ~PINA & 0x20;
+	A6 = ~PINA & 0x40;
+	A7 = ~PINA & 0x80;
+
+	PORTB = (ping) + (earthquakeDetected << 1) + (maxAmp << 3);
+
         Ping();
         Detect_EQ();
         Detect_Max_Amp();
