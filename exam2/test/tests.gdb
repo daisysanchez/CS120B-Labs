@@ -1,4 +1,4 @@
-# Test file for "midterm2"
+# Test file for "exam2"
 
 
 # commands.gdb provides the following functions for ease:
