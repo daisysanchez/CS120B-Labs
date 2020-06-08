@@ -8,7 +8,7 @@
  *	code, is my own original work.
  */
 #include <avr/io.h>
-#include <../header/bit.h>
+//#include <../header/bit.h>
 #include <../header/keypad.h>
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
@@ -57,8 +57,7 @@ int main(void) {
 
     /* Insert DDR and PORT initializations */
 	DDRB = 0xFF; PORTB = 0x00;
-	DDRC = 0xF0; PORTC = 0x0F;
-
+	DDRA = 0xF0; PORTA = 0x0F;
     /* Insert your solution below */
     while (1) {
 	x = GetKeypadKey();
