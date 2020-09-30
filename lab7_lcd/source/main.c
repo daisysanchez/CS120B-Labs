@@ -58,110 +58,111 @@ void TimerSet(unsigned long M){
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
-enum States{start, release, press, hold, reset} state;
+enum States{start, B0, B1, B2, press, release} state, prev_state, next_state;
 
-unsigned char button0 = 0x00;
-unsigned char button1 = 0x00;
-
-unsigned char cnt = 0;
+unsigned char button0;
 
 void Tick(){
+
 	switch(state){
 		case start:
-			state = release;
+			state = B0;
+			break;
+		case B0:
+			if(button0){
+				state = press;
+			} else {
+				state = B1;	
+				
+			}
+			next_state = B1;
+			prev_state = B0;	
+			break;
+		case B1:
+			if(button0){
+				state = press;
+				if(prev_state == B0){
+					next_state = B2;
+				} else {
+					next_state = B0;
+				}
+			} else {
+				if(prev_state == B0){
+					state = B2;
+				} 
+				else {
+					state = B0;
+				}
+			}
+			prev_state = B1;
 			break;
 
-		case release:
-			if((button0 && !button1) || (!button0 && button1)){
+		case B2:
+			if(button0){
 				state = press;
-			} else if (button0 && button1){
-				state = reset;
+				next_state = B1;
 			} else {
-				state = release;
+				state = B1;		
 			}
+			prev_state = B2;
 			break;
 		case press:
-			if((button0 && !button1) || (!button0 && button1)){
+			if(button0){
 				state = press;
-			} else if(button0 && button1){
-				state = reset;
 			} else {
 				state = release;
 			}
 			break;
-/*		case hold:
-			if(button0 ^ button1){
-				state = hold;
-			} else if (button0 && button1){
-				state = reset;
-			} else {
-				state = release;
-			} 
+		case release:	
+		//	if(prev_state == B0) state = B0;
+		//	if(prev_state == B1) state = B1;
+		//	if(prev_state == B2) state = B2;
+			state = next_state;
 			break;
-*/
-		case reset:
-			if(!(button0 && button1)){
-				state = release;
-			} else {
-				state = reset;
-			} 
-			break;
+			
+
 		default:
 			break;
 	}
 
 	switch(state){
-		case press:
-			if(button0 && cnt<9){
-				cnt++;
-				LCD_ClearScreen();
-				LCD_WriteData (cnt + '0');
-			} else if(button1 && cnt > 0){
-				cnt --;
-				LCD_ClearScreen();
-				LCD_WriteData(cnt + '0');
-			} else {
-			}
+		case start:
 			break;
-		case hold:
+		case B0:	
+			PORTB = 0x01;
 			break;
-		case reset:
-			cnt = 0;
-			LCD_ClearScreen();
-			LCD_WriteData('0');
+		case B1:
+	
+			PORTB = 0x02;
 			break;
-		case release:
+		case B2:	
+
+			PORTB = 0x04;
 			break;
 		default:
 			break;
 	}
-}
 	
+}
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-	DDRA = 0x00; PORTA = 0xFF;
-	DDRC = 0xFF; PORTC = 0x00;
-	DDRD = 0xFF; PORTD = 0x00;
-
-	state = start;
-
-	TimerSet(1000);
+	DDRA = 0X00; PORTA = 0xFF;
+	DDRB = 0xFF; PORTB = 0x00; //sets portb to output
+	TimerSet(300);
 	TimerOn();
 
-	LCD_init();
+	//unsigned char tmpB = 0x00;
 
-//	LCD_DisplayString(1, "Hello World");
+	 state = start;
+	 prev_state = start;	
 
     /* Insert your solution below */
-    while (1) {
-//	    LCD_DisplayString(1, "Hello World");
+    while (1){
 	    button0 = ~PINA & 0x01;
-	    button1 = ~PINA & 0x02;
-	    Tick();
-	    while(!TimerFlag);
-	    TimerFlag=0;
-	    continue;
+	Tick();
+	while(!TimerFlag);
+	TimerFlag = 0;
 
     }
     return 1;
